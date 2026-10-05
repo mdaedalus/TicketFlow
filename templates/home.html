@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block title %}Ana Sayfa{% endblock %}
+{% block content %}
+<div class="hero">
+    <h1>Etkinlik Biletleme Sistemi</h1>
+    <p class="muted">Ne yapmak istiyorsun?</p>
+
+    <div class="role-cards">
+        <a class="role-card" href="{{ url_for('admin.login') }}">
+            <div class="icon">🎉</div>
+            <h3>Etkinlik Oluşturucu</h3>
+            <p class="muted">Etkinlik oluştur, çalışan ve bilet ayarlarını yönet.</p>
+        </a>
+
+        <a class="role-card" href="{{ url_for('checkin.employee_login') }}">
+            <div class="icon">👷</div>
+            <h3>Çalışan Girişi</h3>
+            <p class="muted">Bilet kontrol ve QR okutma ekranı.</p>
+        </a>
+
+        <a class="role-card highlight" href="{{ url_for('purchase.public_events') }}">
+            <div class="icon">🎫</div>
+            <h3>Bilet Al</h3>
+            <p class="muted">Etkinlikleri gör, bilet seç, satın al.</p>
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Panel{% endblock %}
+{% block content %}
+<div class="layout">
+    <aside class="sidebar">
+        <h3>{{ event.name }}</h3>
+        <p class="muted small">{{ event.formatted_date }}</p>
+        <nav class="vertical">
+            <a href="{{ url_for('admin.panel') }}" class="active">📊 Genel Bakış</a>
+            <a href="{{ url_for('admin.edit_event') }}">✏️ Etkinlik Bilgileri</a>
+            <a href="{{ url_for('employees.list_employees') }}">👥 Çalışanlar</a>
+            <a href="{{ url_for('tickets.participants') }}">🎫 Katılımcı Listesi</a>
+            <a href="{{ url_for('tickets.settings') }}">⚙️ Bilet Ayarları</a>
+            <a href="{{ url_for('purchase.public_event_detail', slug=event.slug) }}" target="_blank">🔗 Bilet Satış Sayfası</a>
+        </nav>
+    </aside>
+
+    <section class="main-content">
+        <h1>{{ event.name }}</h1>
+        <p class="muted">{{ event.formatted_date }} &middot; Kapasite: {{ event.capacity }}</p>
+
+        <div class="card">
+            <h3>🔗 Paylaşılabilir Bilet Linki</h3>
+            <p class="muted small">Bu linki paylaşarak kullanıcıların bilet almasını sağla.</p>
+            <div class="share-box">
+                <input type="text" readonly id="shareUrl"
+                       value="{{ request.url_root.rstrip('/') }}{{ url_for('purchase.public_event_detail', slug=event.slug) }}">
+                <button class="btn primary" type="button" onclick="copyShare()">📋 Kopyala</button>
+            </div>
+        </div>
+
+        <div class="stats" style="grid-template-columns: repeat(5, 1fr)">
+            <div class="stat"><span>{{ stats.orders }}</span><label>Sipariş</label></div>
+            <div class="stat"><span>{{ stats.tickets }}</span><label>Satılan Bilet</label></div>
+            <div class="stat"><span>{{ stats.checked }}</span><label>Giriş Yapan</label></div>
+            <div class="stat"><span>{{ stats.remaining }}</span><label>Kalan</label></div>
+            <div class="stat revenue">
+                <span>{{ "%.2f"|format(stats.revenue) }}</span>
+                <label>Toplam Gelir (TL)</label>
+            </div>
+        </div>
+    </section>
+</div>
+
+<script>
+function copyShare() {
+    const inp = document.getElementById('shareUrl');
+    inp.select();
+    navigator.clipboard.writeText(inp.value);
+    alert('Link kopyalandı!');
+}
+</script>
+{% endblock %}

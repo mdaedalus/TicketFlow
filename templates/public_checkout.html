@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Ödeme{% endblock %}
+{% block content %}
+<div class="card narrow">
+    <h1>📋 Sipariş Özeti</h1>
+
+    <table>
+        <thead><tr><th>Bilet</th><th>Adet</th><th>Tutar</th></tr></thead>
+        <tbody>
+        {% for it in items %}
+            <tr>
+                <td>{{ it.tt.name }} <span class="muted">({{ it.tt.price|tl }})</span></td>
+                <td>{{ it.qty }}</td>
+                <td>{{ it.line_total|tl }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr><td colspan="2">Ara Toplam</td><td>{{ subtotal|tl }}</td></tr>
+            {% if discount %}
+            <tr class="discount-row">
+                <td colspan="2">🏷️ {{ discount.code }} (-%{{ discount.percent }})</td>
+                <td>- {{ discount_amount|tl }}</td>
+            </tr>
+            {% endif %}
+            <tr class="total-row"><th colspan="2">Toplam</th><th>{{ total|tl }}</th></tr>
+        </tfoot>
+    </table>
+
+    <h3 style="margin-top:20px">Alıcı Bilgileri</h3>
+    <form method="post">
+        <label>Ad Soyad</label>
+        <input name="buyer_name" required placeholder="Adınız Soyadınız">
+        <label>E-posta</label>
+        <input type="email" name="buyer_email" required placeholder="ornek@mail.com">
+        <label>Telefon</label>
+        <input name="buyer_phone" required placeholder="05XX XXX XX XX">
+        <button class="btn primary" type="submit">✅ Satın Al</button>
+    </form>
+
+    <p class="muted small" style="margin-top:12px">
+        ⚠️ Ödeme sistemi şu anda <strong>demo</strong> modundadır. "Satın Al" dediğinde biletler oluşturulur ve QR kodları üretilir.
+    </p>
+</div>
+{% endblock %}

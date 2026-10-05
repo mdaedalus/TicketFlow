@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Çalışanlar{% endblock %}
+{% block content %}
+<div class="layout">
+    <aside class="sidebar">
+        <h3>{{ event.name }}</h3>
+        <nav class="vertical">
+            <a href="{{ url_for('admin.panel') }}">📊 Genel Bakış</a>
+            <a href="{{ url_for('admin.edit_event') }}">✏️ Etkinlik Bilgileri</a>
+            <a href="{{ url_for('employees.list_employees') }}" class="active">👥 Çalışanlar</a>
+            <a href="{{ url_for('tickets.participants') }}">🎫 Katılımcı Listesi</a>
+            <a href="{{ url_for('tickets.settings') }}">⚙️ Bilet Ayarları</a>
+        </nav>
+    </aside>
+
+    <section class="main-content">
+        <h1>👥 Çalışanlar</h1>
+
+        <div class="card">
+            <h3>Yeni Çalışan Ekle</h3>
+            <form method="post" class="grid-4">
+                <input name="first_name" placeholder="İsim" required>
+                <input name="last_name" placeholder="Soyisim" required>
+                <input name="phone" placeholder="Telefon" required>
+                <input name="password" placeholder="Şifre" required>
+                <button class="btn primary" type="submit">Ekle</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Liste ({{ employees|length }})</h3>
+            {% if employees %}
+            <table>
+                <thead>
+                    <tr><th>İsim</th><th>Soyisim</th><th>Telefon</th><th>Şifre</th><th></th></tr>
+                </thead>
+                <tbody>
+                {% for e in employees %}
+                    <tr>
+                        <form method="post" action="{{ url_for('employees.edit_employee', emp_id=e.id) }}">
+                            <td><input name="first_name" value="{{ e.first_name }}"></td>
+                            <td><input name="last_name" value="{{ e.last_name }}"></td>
+                            <td><input name="phone" value="{{ e.phone }}"></td>
+                            <td><input name="password" value="{{ e.password }}"></td>
+                            <td class="actions">
+                                <button class="btn small" type="submit">Kaydet</button>
+                        </form>
+                                <form method="post" action="{{ url_for('employees.delete_employee', emp_id=e.id) }}" style="display:inline">
+                                    <button class="btn small danger" onclick="return confirm('Silinsin mi?')">Sil</button>
+                                </form>
+                            </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+                <p class="muted">Henüz çalışan yok.</p>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}

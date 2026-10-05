@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Etkinlik Oluşturucu Girişi{% endblock %}
+{% block content %}
+<div class="card narrow">
+    <h1>🎉 Etkinlik Oluşturucu Girişi</h1>
+    <p class="muted">E-posta adresini gir. İlk defa giriyorsan etkinlik oluşturma ekranına yönlendirileceksin.</p>
+    <form method="post">
+        <label>E-posta</label>
+        <input type="email" name="email" required placeholder="ornek@mail.com">
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        <button class="btn primary" type="submit">Devam Et</button>
+    </form>
+</div>
+{% endblock %}

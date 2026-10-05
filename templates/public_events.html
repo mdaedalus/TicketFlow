@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Bilet Al{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>🎫 Bilet Al</h1>
+    <p class="muted">Aşağıdaki etkinliklerden birini seç.</p>
+
+    {% if not events %}
+        <p class="muted">Şu anda aktif etkinlik yok.</p>
+    {% endif %}
+
+    <div class="event-grid">
+        {% for e in events %}
+        <a class="event-card" href="{{ url_for('purchase.public_event_detail', slug=e.slug) }}">
+            <h3>{{ e.name }}</h3>
+            <p class="muted small">📅 {{ e.formatted_date }}</p>
+            <p class="muted small">👥 Kapasite: {{ e.capacity }}</p>
+            <span class="btn primary small">Bilet Al →</span>
+        </a>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

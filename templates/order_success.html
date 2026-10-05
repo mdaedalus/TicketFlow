@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Biletleriniz{% endblock %}
+{% block content %}
+<div class="card">
+    <h1>🎉 Satın Alma Başarılı!</h1>
+    <p class="muted">Biletlerin aşağıda listelenmiştir. PDF olarak indirebilirsin.</p>
+
+    <h3>{{ event.name }} — {{ event.formatted_date }}</h3>
+    <p class="muted small">Alıcı: {{ order.buyer_name }} &middot; {{ order.buyer_email }} &middot; {{ order.buyer_phone }}</p>
+
+    <table>
+        <thead><tr><th>Bilet ID</th><th>Tür</th><th>Ödenen</th><th>QR</th><th></th></tr></thead>
+        <tbody>
+        {% for t in order.tickets %}
+            <tr>
+                <td><code>{{ t.ticket_code }}</code></td>
+                <td>{{ t.ticket_type.name }}</td>
+                <td>{{ t.price_paid|tl }}</td>
+                <td><img src="{{ url_for('static', filename='qr/' + t.ticket_code + '.png') }}" width="80"></td>
+                <td><a class="btn small primary" href="{{ url_for('purchase.download_pdf', ticket_code=t.ticket_code) }}">📄 PDF İndir</a></td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <p style="margin-top:20px">
+        <a class="btn" href="{{ url_for('purchase.public_events') }}">← Etkinliklere Dön</a>
+        <a class="btn" href="{{ url_for('purchase.query_ticket') }}">🔎 Bilet Sorgula</a>
+    </p>
+</div>
+{% endblock %}

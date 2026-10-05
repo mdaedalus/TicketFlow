@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Çalışan Girişi{% endblock %}
+{% block content %}
+<div class="card narrow">
+    <h1>👷 Çalışan Girişi</h1>
+    <p class="muted">Bilet kontrol paneli için giriş yap.</p>
+    <form method="post">
+        <label>Telefon</label>
+        <input name="phone" required placeholder="05XX XXX XX XX">
+        <label>Şifre</label>
+        <input type="password" name="password" required>
+        {% if error %}<p class="error">{{ error }}</p>{% endif %}
+        <button class="btn primary" type="submit">Giriş</button>
+    </form>
+</div>
+{% endblock %}

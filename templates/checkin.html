@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Bilet Kontrol{% endblock %}
+{% block content %}
+<div class="card narrow">
+    <h1>📷 Bilet Kontrol</h1>
+    <p class="muted">{{ employee.first_name }} {{ employee.last_name }} — {{ event.name }}</p>
+
+    <form method="post">
+        <label>Bilet ID / QR Kodu</label>
+        <input name="ticket_code" autofocus required placeholder="Kodu gir veya QR okut">
+        <button class="btn primary" type="submit">Kontrol Et</button>
+    </form>
+
+    {% if result %}
+        <div class="result {{ 'ok' if result.ok else 'fail' }}">
+            {{ result.msg }}
+        </div>
+    {% endif %}
+
+    <p style="margin-top:20px">
+        <a href="{{ url_for('checkin.employee_logout') }}">Çıkış</a>
+    </p>
+</div>
+{% endblock %}

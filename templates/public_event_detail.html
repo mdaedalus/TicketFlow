@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}{{ event.name }}{% endblock %}
+{% block content %}
+<div class="card narrow">
+    <h1>{{ event.name }}</h1>
+    <p class="muted">📅 {{ event.formatted_date }}</p>
+
+    {% if not event.ticket_types %}
+        <p class="error">Bu etkinlik için henüz bilet türü tanımlanmamış.</p>
+    {% else %}
+    <form method="post" action="{{ url_for('purchase.public_cart', slug=event.slug) }}">
+        <h3>Bilet Seç</h3>
+        {% for tt in event.ticket_types %}
+            <div class="ticket-row">
+                <div>
+                    <strong>{{ tt.name }}</strong>
+                    <span class="muted"> — {{ tt.price|tl }}</span>
+                </div>
+                <input type="number" name="qty_{{ tt.id }}" min="0" value="0" placeholder="0">
+            </div>
+        {% endfor %}
+
+        <label>İndirim Kodun var mı? (opsiyonel)</label>
+        <input name="discount_code" placeholder="Örn. ERKEN30">
+
+        <button class="btn primary" type="submit">Devam Et →</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

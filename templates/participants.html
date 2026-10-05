@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+{% block title %}Katılımcılar{% endblock %}
+{% block content %}
+<div class="layout">
+    <aside class="sidebar">
+        <h3>{{ event.name }}</h3>
+        <nav class="vertical">
+            <a href="{{ url_for('admin.panel') }}">📊 Genel Bakış</a>
+            <a href="{{ url_for('admin.edit_event') }}">✏️ Etkinlik Bilgileri</a>
+            <a href="{{ url_for('employees.list_employees') }}">👥 Çalışanlar</a>
+            <a href="{{ url_for('tickets.participants') }}" class="active">🎫 Katılımcı Listesi</a>
+            <a href="{{ url_for('tickets.settings') }}">⚙️ Bilet Ayarları</a>
+        </nav>
+    </aside>
+
+    <section class="main-content">
+        <h1>🎫 Katılımcı Listesi</h1>
+
+        {% if orders %}
+        <!-- ============ ÖZET ============ -->
+        <div class="stats" style="grid-template-columns: repeat(4, 1fr)">
+            <div class="stat">
+                <span>{{ summary.orders }}</span>
+                <label>Sipariş</label>
+            </div>
+            <div class="stat">
+                <span>{{ summary.tickets }}</span>
+                <label>Toplam Bilet</label>
+            </div>
+            <div class="stat">
+                <span>{{ summary.checked }}</span>
+                <label>Giriş Yapan</label>
+            </div>
+            <div class="stat revenue">
+                <span>{{ "%.2f"|format(summary.revenue) }}</span>
+                <label>Toplam Gelir (TL)</label>
+            </div>
+        </div>
+        {% endif %}
+
+        {% if not orders %}
+            <div class="card"><p class="muted">Henüz bilet satın alınmadı.</p></div>
+        {% endif %}
+
+        <!-- ============ SİPARİŞLER ============ -->
+        {% for o in orders %}
+        <div class="card">
+            <div class="order-head">
+                <div>
+                    <h3 style="margin:0">{{ o.buyer_name }}</h3>
+                    <div class="muted small">
+                        ✉️ {{ o.buyer_email }} &middot;
+                        📞 {{ o.buyer_phone }} &middot;
+                        🕐 {{ o.created_at.strftime('%d.%m.%Y %H:%M') }}
+                    </div>
+                    {% if o.discount_code %}
+                        <div class="muted small">🏷️ İndirim: <code>{{ o.discount_code }}</code></div>
+                    {% endif %}
+                    <div class="muted small">
+                        🎟️ Toplam <strong>{{ o.tickets|length }}</strong> bilet
+                    </div>
+                </div>
+                <div class="order-total">
+                    {{ o.total|tl }}
+                    {% if o.discount_code and o.subtotal and o.subtotal > o.total %}
+                        <div class="muted small" style="text-decoration:line-through">
+                            {{ o.subtotal|tl }}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Bilet ID</th>
+                        <th>Tür</th>
+                        <th>Ödenen</th>
+                        <th>Durum</th>
+                        <th>PDF</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for t in o.tickets %}
+                    <tr>
+                        <td class="muted small">{{ loop.index }}</td>
+                        <td><code>{{ t.ticket_code }}</code></td>
+                        <td>{{ t.ticket_type.name }}</td>
+                        <td>{{ t.price_paid|tl }}</td>
+                        <td>
+                            {% if t.checked_in %}
+                                ✅ {{ t.checked_in_at.strftime('%d.%m %H:%M') }}
+                            {% else %}
+                                ⏳ Bekliyor
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a class="btn small"
+                               href="{{ url_for('purchase.download_pdf', ticket_code=t.ticket_code) }}">
+                               📄
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endfor %}
+    </section>
+</div>
+{% endblock %}

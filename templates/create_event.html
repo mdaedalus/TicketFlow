@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Etkinliği Düzenle' if edit else 'Etkinlik Oluştur' }}{% endblock %}
+{% block content %}
+<div class="card narrow">
+    <h1>{{ '✏️ Etkinliği Düzenle' if edit else '🎉 Etkinlik Oluştur' }}</h1>
+
+    <form method="post">
+        <label>Etkinlik İsmi</label>
+        <input type="text" name="name" required value="{{ event.name if event else '' }}"
+               placeholder="Örn. Yaz Festivali 2025">
+
+        <label>Etkinlik Tarihi ve Saati</label>
+        <input type="datetime-local" name="date" required
+               value="{{ event.date if event else '' }}">
+
+        <label>Toplam Katılımcı Kapasitesi</label>
+        <input type="number" name="capacity" min="1" required
+               value="{{ event.capacity if event else '' }}"
+               placeholder="Örn. 500">
+
+        <button type="submit" class="btn primary">
+            {{ '💾 Güncelle' if edit else '✨ Etkinliği Oluştur' }}
+        </button>
+    </form>
+</div>
+{% endblock %}

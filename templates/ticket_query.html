@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Bilet Sorgula{% endblock %}
+{% block content %}
+<div class="card narrow">
+    <h1>🔎 Bilet Sorgula</h1>
+    <p class="muted small">Telefon, e-posta veya bilet ID ile sorgulayabilirsin.</p>
+
+    <div class="query-tabs">
+        <button type="button" class="tab {% if query_type == 'phone' or not query_type %}active{% endif %}" data-tab="phone">📞 Telefon</button>
+        <button type="button" class="tab {% if query_type == 'email' %}active{% endif %}" data-tab="email">✉️ E-posta</button>
+        <button type="button" class="tab {% if query_type == 'ticket_id' %}active{% endif %}" data-tab="ticket_id">🎫 Bilet ID</button>
+    </div>
+
+    <form method="post" id="queryForm">
+        <input type="hidden" name="query_type" id="queryType" value="{{ query_type or 'phone' }}">
+
+        <div class="tab-pane" data-pane="phone">
+            <label>Telefon Numarası</label>
+            <input type="text" name="query_value" id="input_phone"
+                   placeholder="05XX XXX XX XX"
+                   value="{{ query_value if query_type == 'phone' else '' }}">
+        </div>
+
+        <div class="tab-pane" data-pane="email" style="display:none">
+            <label>E-posta Adresi</label>
+            <input type="email" name="query_value" id="input_email"
+                   placeholder="ornek@mail.com"
+                   value="{{ query_value if query_type == 'email' else '' }}">
+        </div>
+
+        <div class="tab-pane" data-pane="ticket_id" style="display:none">
+            <label>Bilet ID</label>
+            <input type="text" name="query_value" id="input_ticket_id"
+                   placeholder="Örn. A1B2C3D4E5F6"
+                   value="{{ query_value if query_type == 'ticket_id' else '' }}">
+        </div>
+
+        <button class="btn primary" type="submit">Sorgula</button>
+    </form>
+
+    {% if error %}<p class="error" style="margin-top:16px">{{ error }}</p>{% endif %}
+
+    {% if results %}
+        <div style="margin-top:24px">
+            <h3>📋 Sipariş Bilgileri</h3>
+            {% for order in results %}
+            <div class="order-box">
+                <div class="order-head">
+                    <div>
+                        <strong>{{ order.buyer_name }}</strong>
+                        <div class="muted small">{{ order.buyer_email }} &middot; {{ order.buyer_phone }}</div>
+                    </div>
+                    <div class="order-total">{{ order.total|tl }}</div>
+                </div>
+
+                <div class="muted small" style="margin: 6px 0 12px">
+                    📅 {{ order.created_at.strftime('%d.%m.%Y %H:%M') }} &middot;
+                    🎉 {{ order.event.name }}
+                    {% if order.discount_code %} &middot; 🏷️ {{ order.discount_code }}{% endif %}
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Bilet ID</th>
+                            <th>Tür</th>
+                            <th>Ödenen</th>
+                            <th>Durum</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for t in order.tickets %}
+                        <tr>
+                            <td><code>{{ t.ticket_code }}</code></td>
+                            <td>{{ t.ticket_type.name }}</td>
+                            <td>{{ t.price_paid|tl }}</td>
+                            <td>
+                                {% if t.checked_in %}
+                                    ✅ Giriş yapıldı
+                                {% else %}
+                                    ⏳ Bekliyor
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a class="btn small primary"
+                                   href="{{ url_for('purchase.download_pdf', ticket_code=t.ticket_code) }}">
+                                   📄 PDF
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+
+<script>
+// Sekme değiştirme
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        const target = tab.dataset.tab;
+
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        document.querySelectorAll('.tab-pane').forEach(p => p.style.display = 'none');
+        document.querySelector(`.tab-pane[data-pane="${target}"]`).style.display = 'block';
+
+        document.getElementById('queryType').value = target;
+
+        // Sadece aktif input'u enable et
+        document.querySelectorAll('.tab-pane input').forEach(i => i.disabled = true);
+        document.querySelector(`.tab-pane[data-pane="${target}"] input`).disabled = false;
+    });
+});
+
+// Sayfa yüklendiğinde aktif tab'ı başlat
+(function initTabs() {
+    const current = document.getElementById('queryType').value;
+    document.querySelectorAll('.tab-pane').forEach(p => {
+        p.style.display = (p.dataset.pane === current) ? 'block' : 'none';
+        p.querySelectorAll('input').forEach(i => i.disabled = (p.dataset.pane !== current));
+    });
+})();
+</script>
+{% endblock %}

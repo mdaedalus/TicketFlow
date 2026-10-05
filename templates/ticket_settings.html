@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+{% block title %}Bilet Ayarları{% endblock %}
+{% block content %}
+<div class="layout">
+    <aside class="sidebar">
+        <h3>{{ event.name }}</h3>
+        <nav class="vertical">
+            <a href="{{ url_for('admin.panel') }}">📊 Genel Bakış</a>
+            <a href="{{ url_for('admin.edit_event') }}">✏️ Etkinlik Bilgileri</a>
+            <a href="{{ url_for('employees.list_employees') }}">👥 Çalışanlar</a>
+            <a href="{{ url_for('tickets.participants') }}">🎫 Katılımcı Listesi</a>
+            <a href="{{ url_for('tickets.settings') }}" class="active">⚙️ Bilet Ayarları</a>
+        </nav>
+    </aside>
+
+    <section class="main-content">
+        <h1>⚙️ Bilet Ayarları</h1>
+
+        <div class="card">
+            <h3>Bilet Türü Ekle</h3>
+            <form method="post" class="grid-3">
+                <input type="hidden" name="action" value="add_type">
+                <input name="name" placeholder="Bilet adı (VIP, Öğrenci...)" required>
+                <input name="price" type="number" step="0.01" min="0" placeholder="Fiyat (TL)" required>
+                <button class="btn primary" type="submit">Ekle</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>Bilet Türleri</h3>
+            {% if ticket_types %}
+            <table>
+                <thead><tr><th>Ad</th><th>Fiyat</th><th></th></tr></thead>
+                <tbody>
+                {% for t in ticket_types %}
+                    <tr>
+                        <form method="post" action="{{ url_for('tickets.edit_type', tt_id=t.id) }}">
+                            <td><input name="name" value="{{ t.name }}"></td>
+                            <td><input name="price" type="number" step="0.01" value="{{ t.price }}"></td>
+                            <td class="actions">
+                                <button class="btn small" type="submit">Kaydet</button>
+                        </form>
+                                <form method="post" action="{{ url_for('tickets.delete_type', tt_id=t.id) }}" style="display:inline">
+                                    <button class="btn small danger" onclick="return confirm('Silinsin mi?')">Sil</button>
+                                </form>
+                            </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}<p class="muted">Henüz bilet türü yok.</p>{% endif %}
+        </div>
+
+        <div class="card">
+            <h3>İndirim Kodu Ekle</h3>
+            <form method="post" class="grid-3">
+                <input type="hidden" name="action" value="add_discount">
+                <input name="code" placeholder="KOD (örn. ERKEN30)" required>
+                <input name="percent" type="number" min="1" max="100" placeholder="Yüzde %" required>
+                <button class="btn primary" type="submit">Ekle</button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h3>İndirim Kodları</h3>
+            {% if discounts %}
+            <table>
+                <thead><tr><th>Kod</th><th>Yüzde</th><th></th></tr></thead>
+                <tbody>
+                {% for d in discounts %}
+                    <tr>
+                        <td><code>{{ d.code }}</code></td>
+                        <td>%{{ d.percent }}</td>
+                        <td>
+                            <form method="post" action="{{ url_for('tickets.delete_discount', dc_id=d.id) }}">
+                                <button class="btn small danger" onclick="return confirm('Silinsin mi?')">Sil</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% else %}<p class="muted">İndirim kodu yok.</p>{% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}
