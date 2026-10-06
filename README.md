@@ -115,16 +115,16 @@ Organizatör panelden canlı olarak **kaç bilet satıldı, kim geldi, ne kadar 
 
 ## 🖼️ Ekran Görüntüleri
 
-![Ana Sayfa](docs/screenshots/1.png)
-![Ana Sayfa](docs/screenshots/2.png)
-![Ana Sayfa](docs/screenshots/3.png)
-![Ana Sayfa](docs/screenshots/4.png)
-![Ana Sayfa](docs/screenshots/5.png)
-![Ana Sayfa](docs/screenshots/6.png)
-![Ana Sayfa](docs/screenshots/7.png)
-![Ana Sayfa](docs/screenshots/8.png)
-![Ana Sayfa](docs/screenshots/9.png)
-![Ana Sayfa](docs/screenshots/10.png)
+![](docs/screenshots/1.png)
+![](docs/screenshots/2.png)
+![](docs/screenshots/3.png)
+![](docs/screenshots/4.png)
+![](docs/screenshots/5.png)
+![](docs/screenshots/6.png)
+![a](docs/screenshots/7.png)
+![](docs/screenshots/8.png)
+![](docs/screenshots/9.png)
+![](docs/screenshots/10.png)
 
 
 ---
